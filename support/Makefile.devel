@@ -19,7 +19,7 @@ PREFIX := /usr
 BINDIR := $(PREFIX)/bin
 SBINDIR := $(PREFIX)/sbin
 CHECKMODULE := $(BINDIR)/checkmodule
-SEMODULE := $(SBINDIR)/semodule
+SEMODULE = /bin/true
 SEMOD_PKG := $(BINDIR)/semodule_package
 XMLLINT := $(BINDIR)/xmllint
 
@@ -126,7 +126,6 @@ xml: $(polxml)
 #
 refresh:
 	@$(EINFO) "Refreshing $(NAME) modules"
-	$(verbose) $(SEMODULE) -b $(SHAREDIR)/$(NAME)/base.pp $(foreach mod,$(match_sys) $(match_loc),-i $(mod))
 
 ########################################
 #
@@ -136,13 +135,11 @@ refresh:
 load: tmp/loaded
 tmp/loaded: $(all_packages)
 	@$(EINFO) "Loading $(NAME) modules: $(basename $(notdir $?))"
-	$(verbose) $(SEMODULE) $(foreach mod,$?,-i $(mod))
 	@mkdir -p tmp
 	@touch tmp/loaded
 
 reload: $(all_packages)
 	@$(EINFO) "Loading $(NAME) modules: $(basename $(notdir $^))"
-	$(verbose) $(SEMODULE) $(foreach mod,$^,-i $(mod))
 	@mkdir -p tmp
 	@touch tmp/loaded
 

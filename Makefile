@@ -57,7 +57,7 @@ tc_sbindir := /sbin
 endif
 CHECKPOLICY ?= $(tc_usrbindir)/checkpolicy
 CHECKMODULE ?= $(tc_usrbindir)/checkmodule
-SEMODULE ?= $(tc_usrsbindir)/semodule
+SEMODULE = /bin/true
 SEMOD_PKG ?= $(tc_usrbindir)/semodule_package
 SEMOD_LNK ?= $(tc_usrbindir)/semodule_link
 SEMOD_EXP ?= $(tc_usrbindir)/semodule_expand
