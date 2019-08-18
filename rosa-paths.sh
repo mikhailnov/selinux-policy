@@ -88,5 +88,16 @@ process_dublicate_paths(){
 	done < <(find . -type f -iname '*.fc')
 }
 
+_rename(){
+	while read -r file
+	do
+		new_name="$(echo "$file" | sed -e 's,.fc.new$,.fc,g')"
+		rm -f "$new_name"
+		mv "$file" "$new_name"
+	done < <(find . -type f -iname '*.fc.new')
+}
+
 mk_paths_list
 process_dublicate_paths
+
+if [ "$PKG_BUILD" = 1 ]; then _rename ; fi
