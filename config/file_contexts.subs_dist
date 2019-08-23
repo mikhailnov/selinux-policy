@@ -9,14 +9,10 @@
 # example, but aliasing.
 # 
 /etc/init.d /etc/rc.d/init.d
-/lib32 /lib
-/lib64 /lib
 /run /var/run
 /run/lock /var/lock
 /usr/lib32 /usr/lib
-/usr/lib64 /usr/lib
 /usr/local/lib32 /usr/lib
 /usr/local/lib64 /usr/lib
 /usr/local/lib /usr/lib
 /var/run/lock /var/lock
-/sbin /usr/sbin
