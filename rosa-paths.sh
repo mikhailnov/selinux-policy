@@ -45,9 +45,7 @@ copy_and_add_paths(){
 	
 	while read -r line
 	do
-		if [ -z "$line" ]; then continue; fi
-		# here sed pattern is so that it does not change anything
-		_and "$new_file" "$line" "s,444,444,g"
+		echo "$line" >> "$new_file"
 		
 		if echo "$line" | grep -q '^/bin'; then
 			_and "$new_file" "$line" 's,^/bin,/usr/bin,g'
