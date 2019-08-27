@@ -24,12 +24,13 @@ _and(){
 		echo "Not sufficient args, usage: _and <file> <string> <sed pattern>"
 		return 1
 	fi
-	line_fixed="$(echo "$2" | sed -e 's,  , ,g' -e 's,\t, ,g')"
-	if grep -q "$2" "$1" || grep -q "$line_fixed" "$1"
+	sedded_line="$(echo "$2" | sed -e "$3")"
+	line_fixed="$(echo "$sedded_line" | sed -e 's,  , ,g' -e 's,\t, ,g')"
+	if grep -q "$sedded_line" "$1" || grep -q "$line_fixed" "$1"
 		then
 			:
 		else
-			echo "$2" | sed -e "$3" >> "$1"
+			echo "$sedded_line" >> "$1"
 	fi
 }
 
