@@ -26,7 +26,7 @@ _and(){
 	fi
 	sedded_line="$(echo "$2" | sed -e "$3")"
 	line_fixed="$(echo "$sedded_line" | sed -e 's,  , ,g' -e 's,\t, ,g')"
-	if grep -q "$sedded_line" "$1" || grep -q "$line_fixed" "$1"
+	if grep -REq "${sedded_line}|${line_fixed}" .
 		then
 			:
 		else
