@@ -16,3 +16,6 @@
 /usr/local/lib64 /usr/lib
 /usr/local/lib /usr/lib
 /var/run/lock /var/lock
+/usr/lib/systemd /lib/systemd
+/usr/bin /bin
+/usr/sbin /sbin
