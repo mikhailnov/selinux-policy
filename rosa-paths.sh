@@ -36,6 +36,7 @@ TMP="${TMP:-$(mktemp -d)}"
 PL="${PL:-${TMP}/paths.list}"
 NOCHANGE_LIST="${NOCHANGE_LIST:-${TMP}/nochange.list}"
 MODE="${MODE:-alias-dups-remove}"
+DISTRO="${DISTRO:-redhat}"
 
 mk_paths_list(){
 	# Make list of paths
@@ -72,6 +73,10 @@ _and(){
 	unset add_grep_pattern
 }
 
+_ln(){
+	ln="$(cat "$new_file" | wc -l)"
+}
+
 copy_and_add_paths(){
 	if [ ! -f "$1" ]; then
 		echo "File $file not found"
@@ -79,11 +84,24 @@ copy_and_add_paths(){
 	fi
 	file="$1"
 	new_file="${file}.new"
-	
 	touch "$new_file"
-	
+	skipping=0
+	ln=0 # line number
+
 	while read -r line
 	do
+		_ln
+		# skip all ifdef/ifndef blocks which do not refer to the target distro
+		if echo "$line" | grep -qE '^ifdef|^ifndef' && ! echo "$line" | grep -q "distro_${DISTRO}"; then
+			skipping=1
+		fi
+		if [ "$skipping" = 1 ]; then
+			if echo "$line" | grep -q "^')"
+				then skipping=0 && continue
+				else continue
+			fi
+		fi
+
 		case "$MODE" in
 		duplicate )
 		echo "$line" >> "$new_file"
@@ -149,6 +167,21 @@ copy_and_add_paths(){
 				fi
 			else
 				echo "$line" >> "$new_file"
+				_ln
+				# cleanup 'if' blocks which got empty
+				if echo "$line" | grep -q "^')" && \
+					sed "$((ln-1))!d" "$new_file" | grep -qE '^ifdef|^ifndef' ; then
+						sed "$((ln-1))d" -i "$new_file"
+						sed "${ln}d" -i "$new_file"
+						continue
+				fi
+				_ln
+				if echo "$line" | grep -q "^')" && \
+					sed "$((ln-1))!d" "$new_file" | grep -q "^'\," ; then
+						sed "$((ln-1))d" -i "$new_file"
+						continue
+				fi
+				_ln
 		fi
 		;;
 		* )
@@ -156,7 +189,8 @@ copy_and_add_paths(){
 		exit 1
 		;;
 		esac
-		
+
+		#ln=$((ln+1))
 	done < "$file"	
 }
 
