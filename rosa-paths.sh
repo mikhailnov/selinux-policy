@@ -7,11 +7,15 @@
 # In MODE=alias-dups-remove if there are both lines like e.g.
 # /bin/su -- gen_context(system_u:object_r:su_exec_t,s0)
 # /usr/bin/su -- gen_context(system_u:object_r:su_exec_t,s0)
-# we must remove a line with either /bin/su or /usr/bin/su by this script
-# and add "/bin /usr/bin" and/or "/usr/bin /bin" to file_contexts.subs_dist
+# we must remove a line with either /bin/su or /usr/bin/su by this script,
+# all occurences of /bin, /sbin and /usr/sbin will be changed to /usr/bin
+# and then /bin, /sbin and /usr/sbin must be aliased to /usr/bin
+# in file_contexts.subs_dist. This will allow us to not worry that binary xxx
+# may be in defferent *bin* directories in different distributions.
 # When both those lines are in policy AND there are aliases
 # "/bin /usr/bin" and (or?) "/usr/bin /bin"
 # matchpathcon(3) will do something like just ignoring that lines in policy.
+# We try to avoid that.
 # That's why MODE=alias-dups-remove was invented.
 
 # In MODE=duplicate we do not add aliases to file_contexts.subs_dist
@@ -137,7 +141,11 @@ copy_and_add_paths(){
 				p2="$(echo "$line" | awk -F 'bin/' '{print $NF}' | awk '{print $NF}')"
 				# [[:blank:]] is a POSIX regexp for both tabs and spaces
 				if ! grep -inHr --include="*.fc.new" "/${p1}[[:blank:]]" . | grep -q --include="*.fc.new" "${p2}" ; then
-					echo "$line" >> "$new_file"
+					echo "$line" | sed \
+						-e 's,^/bin/,/usr/bin/,g' \
+						-e 's,^/sbin/,/usr/bin/,g' \
+						-e 's,^/usr/sbin/,/usr/bin/,g' \
+						>> "$new_file"
 				fi
 			else
 				echo "$line" >> "$new_file"
