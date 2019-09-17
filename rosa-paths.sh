@@ -155,7 +155,10 @@ copy_and_add_paths(){
 		alias-dups-remove )
 		if echo "$line" | grep -q '^/' && echo "$line" | grep -q 'bin/'
 			then
-				p1="$(echo "$line" | awk -F 'bin/' '{print $NF}' | awk '{print $1}' | sed -e 's,\\,\\\\,g')"
+				# Bellow 's,\\,\\\\,g' fixes a problem that `grep "xxx\.foo"` (with backslash) does not find anything,
+				# but `grep "xxx\\.foo"` does find.
+				# 's,*,\\*,g' fixes a problem that `grep "/bin/.*"` also finds "/bin", here we escape "*" to prevent it from being a wildcard.
+				p1="$(echo "$line" | awk -F 'bin/' '{print $NF}' | awk '{print $1}' | sed -e 's,\\,\\\\,g' -e 's,*,\\*,g')"
 				p2="$(echo "$line" | awk -F 'bin/' '{print $NF}' | awk '{print $NF}')"
 				# [[:blank:]] is a POSIX regexp for both tabs and spaces
 				if ! grep -inHr --include="*.fc.new" "/${p1}[[:blank:]]" . | grep -q --include="*.fc.new" "${p2}" ; then
