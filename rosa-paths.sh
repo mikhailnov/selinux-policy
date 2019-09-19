@@ -153,7 +153,7 @@ copy_and_add_paths(){
 		fi
 		;;
 		alias-dups-remove )
-		if echo "$line" | grep -q '^/' && echo "$line" | grep -q 'bin/'
+		if echo "$line" | grep -qE '^/bin/|^/usr/bin/|^/sbin/|^/usr/sbin/'
 			then
 				# Bellow 's,\\,\\\\,g' fixes a problem that `grep "xxx\.foo"` (with backslash) does not find anything,
 				# but `grep "xxx\\.foo"` does find.
