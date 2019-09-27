@@ -26,7 +26,7 @@ gen_tunable(fips_mode, true)
 ## </p>
 ## </desc>
 #
-gen_tunable(domain_kernel_load_modules, false)
+gen_tunable(domain_kernel_load_modules, true)
 
 ## <desc>
 ## <p>
@@ -42,14 +42,14 @@ gen_tunable(mmap_low_allowed, false)
 ##  while kernel is executed with systemd.log_target=kmsg parameter.
 ## </p>
 ## </desc>
-gen_tunable(domain_can_write_kmsg, false)
+gen_tunable(domain_can_write_kmsg, true)
 
 ## <desc>
 ## <p>
 ## Allow any process to mmap any file on system with attribute file_type.
 ## </p>
 ## </desc>
-gen_tunable(domain_can_mmap_files, false)
+gen_tunable(domain_can_mmap_files, true)
 
 # Mark process types as domains
 attribute domain;
