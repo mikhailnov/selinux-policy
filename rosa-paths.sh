@@ -92,7 +92,7 @@ copy_and_add_paths(){
 	do
 		_ln
 		# skip all ifdef/ifndef blocks which do not refer to the target distro
-		if echo "$line" | grep -qE '^ifdef|^ifndef' && echo "$line" | grep -q "distro_" && ! echo "$line" | grep -q "distro_${DISTRO}"; then
+		if echo "$line" | grep -qE '^ifdef|^ifndef' && ! echo "$line" | grep -q "distro_${DISTRO}"; then
 			skipping=1
 		fi
 		if [ "$skipping" = 1 ]; then
